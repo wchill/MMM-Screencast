@@ -58,7 +58,7 @@ class DialServer {
                 },
                 stopApp: (appName, pid, callback) => {
                     console.log("Stopping app");
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, {});
                     callback(true);
                 }
             }
@@ -84,6 +84,7 @@ class DialServer {
     }
 
     stopCast() {
+        this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, {});
         if (this._castAppName) {
             this.dialServer.delegate.stopApp(this._castAppName, 'run', (e) => false);
         }
