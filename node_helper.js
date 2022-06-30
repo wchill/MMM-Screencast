@@ -25,9 +25,9 @@ const youtubeApp = {
 
 
 class DialServer {
-    constructor(sendSocketNotification) {
+    constructor() {
         this.dialServer;
-        this.sendSocketNotification;
+        this._mmSendSocket;
         this._castAppName = null;
         this.config = {};
         this.server = http.createServer(app);
@@ -49,15 +49,15 @@ class DialServer {
                     youtubeApp.pid = 'run';
                     youtubeApp.state = 'starting';
                     youtubeApp.launch(launchData, this.config);
-                    this.sendSocketNotification(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
 
                     youtubeApp.state = 'running';
                     this._castAppName = appName;
-                    this.sendSocketNotification(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
                     callback(app.pid);
                 },
                 stopApp: (appName, pid, callback) => {
-                    this.sendSocketNotification(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
                     callback(true);
                 }
             }
@@ -78,7 +78,7 @@ class DialServer {
             useIPv6 ? '::' : '0.0.0.0',
             () => {
                 this.dialServer.start();
-                this.sendSocketNotification(MODULE_NOTIFICATIONS.start_dial, { port: usePort });
+                this.mmSendSocket(MODULE_NOTIFICATIONS.start_dial, { port: usePort });
             });
     }
 
@@ -86,6 +86,14 @@ class DialServer {
         if (this._castAppName) {
             this.dialServer.delegate.stopApp(this._castAppName, 'run', (e) => false);
         }
+    }
+
+    get mmSendSocket() {
+        return this._mmSendSocket;
+    }
+
+    set mmSendSocket(socket) {
+        return this._mmSendSocket = socket;
     }
 }
 
