@@ -40,12 +40,11 @@ class DialServer {
             delegate: {
                 getApp: (appName) => youtubeApp,
                 launchApp: (appName, launchData, callback) => {
+                    console.log("Launching youtube app");
                     youtubeApp.pid = 'run';
                     youtubeApp.state = 'starting';
                     youtubeApp.launch(launchData, this.config);
                     this.mmSendSocket(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
-
-                    console.log(callback);
 
                     youtubeApp.state = 'running';
                     this._castAppName = appName;
