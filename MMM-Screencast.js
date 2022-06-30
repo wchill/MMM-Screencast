@@ -37,6 +37,8 @@ Module.register("MMM-Screencast", {
             container.innerHTML = "";
             let path = "https://www.youtube.com/tv?" + launchData;
             let iframe = document.createElement("iframe");
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
             iframe.className = "screencast-iframe";
             iframe.id = "screencast-iframe";
             iframe.setAttribute("allow", "autoplay; encrypted-media");
@@ -45,14 +47,6 @@ Module.register("MMM-Screencast", {
 
             console.log(path);
             container.style.visibility = "visible";
-
-            /*
-            fetch(path, { mode: 'no-cors' })
-                .then(response => {
-                    console.log("Fetch complete");
-                    container.style.visibility = "visible";
-                }).catch(err => console.log(err));
-            */
         } else if (notification.includes("STOP-APP") || notification.includes("CLOSE")) {
             this.updateDom();
         }
