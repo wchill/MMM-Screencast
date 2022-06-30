@@ -106,7 +106,7 @@ module.exports = NodeHelper.create({
     start: function () {
         console.log("Starting dial server");
         this.sendSocketNotification("MMM-Screencast:test");
-        this.dialServer.mmSendSocket = (n, p) => this.sendSocketNotification(n, p);
+        this.dialServer.mmSendSocket = (n, p) => {console.log(`Sending ${n} - ${p}`); this.sendSocketNotification(n, p); };
         this.dialServer.start();
         this.running = true;
     },
