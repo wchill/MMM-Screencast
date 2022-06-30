@@ -5,7 +5,6 @@ const { MODULE_NOTIFICATIONS } = require('./constants.js');
 const dial = require("peer-dial");
 const http = require('http');
 const express = require('express');
-const { MODULE_NOTIFICATIONS } = require('./constants.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -26,9 +25,9 @@ const youtubeApp = {
 
 
 class DialServer {
-    constructor() {
+    constructor(sendSocketNotification) {
         this.dialServer;
-        this._mmSendSocket;
+        this.sendSocketNotification;
         this._castAppName = null;
         this.config = {};
         this.server = http.createServer(app);
@@ -50,15 +49,15 @@ class DialServer {
                     youtubeApp.pid = 'run';
                     youtubeApp.state = 'starting';
                     youtubeApp.launch(launchData, this.config);
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
+                    this.sendSocketNotification(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
 
                     youtubeApp.state = 'running';
                     this._castAppName = appName;
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
+                    this.sendSocketNotification(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
                     callback(app.pid);
                 },
                 stopApp: (appName, pid, callback) => {
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
+                    this.sendSocketNotification(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
                     callback(true);
                 }
             }
@@ -79,7 +78,7 @@ class DialServer {
             useIPv6 ? '::' : '0.0.0.0',
             () => {
                 this.dialServer.start();
-                this.mmSendSocket(MODULE_NOTIFICATIONS.start_dial, { port: usePort });
+                this.sendSocketNotification(MODULE_NOTIFICATIONS.start_dial, { port: usePort });
             });
     }
 
@@ -87,14 +86,6 @@ class DialServer {
         if (this._castAppName) {
             this.dialServer.delegate.stopApp(this._castAppName, 'run', (e) => false);
         }
-    }
-
-    get mmSendSocket() {
-        return this._mmSendSocket;
-    }
-
-    set mmSendSocket(socket) {
-        return this._mmSendSocket = socket;
     }
 }
 

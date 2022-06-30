@@ -13,6 +13,7 @@ Module.register("MMM-Screencast", {
 
     start: function () {
         Log.info("Starting module: " + this.name);
+        this.sendSocketNotification("MMM-Screencast:CLIENT-READY", {});
     },
 
     getDom: function () {
@@ -25,8 +26,8 @@ Module.register("MMM-Screencast", {
         return div;
     },
     socketNotificationReceived: function (notification, payload) {
-        console.log(`Incoming notification: ${notification}`);
-        console.log(`Incoming payload: ${payload}`);
+        Log.log(`Incoming notification: ${notification}`);
+        Log.log(`Incoming payload: ${payload}`);
         if (notification.includes('ERROR')) {
             const { message } = payload;
             Log.error(`${notification}: ${message}`);

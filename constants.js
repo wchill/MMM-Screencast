@@ -4,7 +4,8 @@ const MODULE_NOTIFICATIONS = {
     start_dial: 'MMM-Screencast:START-DIAL',
     run_app: 'MMM-Screencast:RUN-APP',
     launch_app: 'MMM-Screencast:LAUNCH-APP',
-    config_error: 'MMM-Screencast:CONFIG-ERROR'
+    config_error: 'MMM-Screencast:CONFIG-ERROR',
+    client_ready: 'MMM-Screencast:CLIENT-READY'
 };
 
 module.exports = {
