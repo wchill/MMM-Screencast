@@ -28,7 +28,7 @@ Module.register("MMM-Screencast", {
         if (notification.includes('ERROR')) {
             const { message } = payload;
             Log.error(`${notification}: ${message}`);
-        } else if (notification.includes("CAST-START")) {
+        } else if (notification.includes("LAUNCH-APP")) {
             const { launchData } = payload;
             let container = document.getElementById("screencast-container");
             container.innerHTML = "";
@@ -50,7 +50,7 @@ Module.register("MMM-Screencast", {
                     container.style.visibility = "visible";
                 }).catch(err => console.log(err));
             */
-        } else if (notification.includes("CAST-STOP")) {
+        } else if (notification.includes("STOP-APP")) {
             this.updateDom();
         }
         this.sendNotification(notification, payload);

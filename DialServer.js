@@ -1,8 +1,6 @@
 const dial = require("peer-dial");
 const http = require('http');
 const express = require('express');
-const { spawn } = require('cross-spawn');
-const { IpcClient } = require('./ipc.js');
 const { MODULE_NOTIFICATIONS } = require('./constants.js');
 
 const app = express();
@@ -49,30 +47,14 @@ class DialServer {
 
                     console.log(callback);
 
-                    castApp.state = 'running';
+                    youtubeApp.state = 'running';
                     this._castAppName = appName;
                     this.mmSendSocket(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
                     callback(app.pid);
                 },
                 stopApp: (appName, pid, callback) => {
-                    console.log("Got request to stop", appName, " with pid: ", pid);
-                    const castApp = apps[appName];
-
-                    if (castApp && castApp.pid == pid) {
-                        castApp.ipc.on('QUIT_HEARD', (data) => {
-                            castApp.ipc.disconnect();
-                            castApp.state = 'stopped';
-                            castApp.pid = null;
-                            child = null;
-                            this._castAppName = null;
-                            this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
-                            callback(true);
-                        });
-
-                        castApp.ipc.emit('QUIT');
-                    } else {
-                        callback(false);
-                    }
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
+                    callback(true);
                 }
             }
         });
@@ -102,10 +84,6 @@ class DialServer {
         }
     }
 
-    get castSocket() {
-        return apps[this._castAppName].ipc;
-    }
-
     get mmSendSocket() {
         return this._mmSendSocket;
     }
@@ -113,11 +91,6 @@ class DialServer {
     set mmSendSocket(socket) {
         return this._mmSendSocket = socket;
     }
-
-    setConfig(_c) {
-        this.config = _c;
-    }
-
 }
 
 module.exports = DialServer;
