@@ -49,11 +49,11 @@ class DialServer {
                     youtubeApp.pid = 'run';
                     youtubeApp.state = 'starting';
                     youtubeApp.launch(launchData, this.config);
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.launch_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.launch_app, { launchData });
 
                     youtubeApp.state = 'running';
                     this._castAppName = appName;
-                    this.mmSendSocket(MODULE_NOTIFICATIONS.run_app, { app: app.name, state: app.state });
+                    this.mmSendSocket(MODULE_NOTIFICATIONS.run_app, { launchData });
                     callback(app.pid);
                 },
                 stopApp: (appName, pid, callback) => {
