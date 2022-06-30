@@ -53,7 +53,7 @@ Module.register("MMM-Screencast", {
                     container.style.visibility = "visible";
                 }).catch(err => console.log(err));
             */
-        } else if (notification.includes("STOP-APP")) {
+        } else if (notification.includes("STOP-APP") || notification.includes("CLOSE")) {
             this.updateDom();
         }
         this.sendNotification(notification, payload);

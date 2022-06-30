@@ -57,6 +57,7 @@ class DialServer {
                     callback(app.pid);
                 },
                 stopApp: (appName, pid, callback) => {
+                    console.log("Stopping app");
                     this.mmSendSocket(MODULE_NOTIFICATIONS.stop_app, { app: app.name, state: app.state });
                     callback(true);
                 }
