@@ -1,30 +1,32 @@
+// Reminder: this is global.
+
 const NodeHelper = require("node_helper");
 const DialServer = require("./DialServer.js");
 const { MODULE_NOTIFICATIONS, POSITIONS } = require('./constants.js');
 
 module.exports = NodeHelper.create({
-	dialServer: new DialServer(),
-	start: function() {
-		this.dialServer.mmSendSocket = (n,p) => this.sendSocketNotification(n,p);
-	},
-	socketNotificationReceived: function(notification, payload) {
-		switch (notification) {
-			case 'SET_CONFIG':
-				const { x, y, position } = payload;
-				
-				if (!(x && y) && !POSITIONS[position]) {
-					const message = 'There was an error with your positioning config. Please check your config.'
-					console.error(`${MODULE_NOTIFICATIONS.config_error}: ${message}`);
-					this.sendSocketNotification(MODULE_NOTIFICATIONS.config_error, { message });
-				};
-
-				this.dialServer.setConfig(payload);
-				this.dialServer.start();
-				break;
-			case MODULE_NOTIFICATIONS.close:
-				this.dialServer.stopCast();
-			default:
-				break;
-		}
-	}
+    dialServer: new DialServer(),
+    running: false,
+    start: function () {
+        this.dialServer.mmSendSocket = (n, p) => this.sendSocketNotification(n, p);
+        this.dialServer.start();
+        this.running = true;
+    },
+    stop: function() {
+        if (!!this.running) {
+            this.dialServer.stopCast();
+            this.running = false;
+        }
+    },
+    socketNotificationReceived: function (notification, payload) {
+        switch (notification) {
+            case MODULE_NOTIFICATIONS.close:
+                if (!!this.running) {
+                    this.dialServer.stopCast();
+                    this.running = false;
+                }
+            default:
+                break;
+        }
+    }
 });
